@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { PuffLoader } from 'react-spinners';
-import { FaUpload } from 'react-icons/fa'
+import { FaTrash, FaUpload } from 'react-icons/fa'
 import { toast } from 'react-toastify';
-import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import { deleteObject, getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { storage } from '../config/firebase';
 
 const CreateTemplate = () => {
@@ -61,6 +61,22 @@ const CreateTemplate = () => {
       }else{
          toast.info("Invalid File Format");
       }
+    }
+
+
+   // action to delete the image from the cloud
+    const deleteImageObject = () => {
+      const deleteRef = ref(storage, imageAsset.uri);
+      deleteObject.apply(deleteRef).then(()=>{
+          toast.success('Image removed');
+          setInterval(() => {
+            setimageAsset((prev) => ({
+              ...prev, 
+              progress: 0,
+              uri: null
+            }));
+          },2000);
+       })
     }
 
     const isAllowed = (file) => {
@@ -140,7 +156,21 @@ const CreateTemplate = () => {
                      (
                        <>
                         <div className='relative rounded-md w-full h-full overflow-hidden'>
-                          <img src={imageAsset?.uri} className='w-full h-full object-cover' loading='lazy' alt="" />
+                          <img 
+                            src={imageAsset?.uri} 
+                            className='w-full h-full object-cover' 
+                            loading='lazy' 
+                            alt="" 
+                          />
+
+                          {/* delete action */}
+                          <div className='absolute top-4 right-4 w-8 h-8 rounded-md flex
+                           items-center justify-center bg-red-500 cursor-pointer'
+                           onClick={deleteImageObject}
+                           >
+                              <FaTrash className="text-sm text-white" />
+                          </div>
+
                         </div>
                        </>
                       )
