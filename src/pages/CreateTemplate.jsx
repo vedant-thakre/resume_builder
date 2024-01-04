@@ -78,7 +78,7 @@ const CreateTemplate = () => {
           },2000);
        })
     }
-    // bhai kuch kam nhi kara aaj
+    // bhai kuch kam nhi kara aaj lmao
 
     const isAllowed = (file) => {
       const isAllowedTypes = [ "image/jpeg", "image/jpg", "image/png" ];
