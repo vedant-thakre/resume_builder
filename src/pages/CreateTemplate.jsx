@@ -63,6 +63,7 @@ const CreateTemplate = () => {
       }
     }
 
+    // laptop pe pani gir gaya gand phat rahi hai
 
    // action to delete the image from the cloud
     const deleteImageObject = () => {
