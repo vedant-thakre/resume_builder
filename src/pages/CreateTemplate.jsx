@@ -65,6 +65,7 @@ const CreateTemplate = () => {
     }
 
     // laptop pe pani gir gaya gand phat rahi hai
+    // increased the rating on the cf and fucked up the LC
 
    // action to delete the image from the cloud
     const deleteImageObject = () => {
