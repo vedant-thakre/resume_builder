@@ -4,6 +4,9 @@ import { FaTrash, FaUpload } from 'react-icons/fa'
 import { toast } from 'react-toastify';
 import { deleteObject, getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { storage } from '../config/firebase';
+import { initialTags } from '../utils/helper';
+import { serverTimestamp } from 'firebase/firestore';
+import useTemplates from '../hooks/useTemplate';
 
 const CreateTemplate = () => {
     const [formData, setFormData] = useState({
@@ -13,13 +16,28 @@ const CreateTemplate = () => {
     const [imageAsset, setimageAsset] = useState({
       isImageLoading: false,
       uri: null,
-      progress: 0
-    })
+      progress: 0,
+    });
+
+    const [selectedTags, setSelectedTags] = useState([]);
+
+    const { data : templates, isLoading: templatesIsLoading, isError : templatesIsError, refetch : templatesRefetch } = useTemplates();
+
+    // handling the selected tags
+    const handleSelectedTags = (tag) => {
+      // check if the tag is selected or not
+      if(selectedTags.includes(tag)){
+        // if selected the remove it
+        setSelectedTags(selectedTags.filter(selected => selected !== tag));
+      }else{
+        setSelectedTags([...selectedTags, tag]);
+      }
+    }
 
     // handling the input change
     const handleInputChange = (e) => {
       const { name, value } = e.target;
-      setFormData((prev) => ({...prevRec, [name]: value}));
+      setFormData((prev) => ({...prev, [name]: value}));
     }
 
     const handleFileChange = async (e) => {
@@ -70,23 +88,36 @@ const CreateTemplate = () => {
 
    // action to delete the image from the cloud
     const deleteImageObject = () => {
+      setInterval(() => {
+       setimageAsset((prev) => ({
+            ...prev,
+            progress: 0,
+            uri: null,
+       }))
+      },2000);
       const deleteRef = ref(storage, imageAsset.uri);
-      deleteObject.apply(deleteRef).then(()=>{
-          toast.success('Image removed');
-          setInterval(() => {
-            setimageAsset((prev) => ({
-              ...prev, 
-              progress: 0,
-              uri: null
-            }));
-          },2000);
-       })
+      deleteObject(deleteRef).then(() => {
+        toast.success("Image removed");
+      })
     }
-    // bhai kuch kam nhi kara aaj lmao
 
     const isAllowed = (file) => {
       const isAllowedTypes = [ "image/jpeg", "image/jpg", "image/png" ];
       return isAllowedTypes.includes(file.type);
+    }
+
+    const pushToCloud = async() => {
+      const timestamp = serverTimestamp();
+      const id = `${Date.now()}`;
+      const _doc = {
+        _id : id,
+        title : formData.title,
+        imageURL : imageAsset.uri,
+        tags : selectedTags,
+        name :  templates && templates.length > 0 ? `Templates${templates.length + 1}` : "Templates1",
+        timestamp : timestamp,
+      };
+      console.log(_doc)
     }
 
   return (
@@ -106,7 +137,7 @@ const CreateTemplate = () => {
           TempID : {" "}
           </p>
           <p className='text-sm text-txtDark capitalize font-bold'>
-          Template1
+          { templates && templates.length > 0 ? `Templates${templates.length + 1}` : "Templates1"}
           </p>
         </div>
 
@@ -184,6 +215,25 @@ const CreateTemplate = () => {
               )
             }
         </div>
+
+        { /* Tags */}
+        <div className='w-full flex items-center flex-wrap gap-2'>
+            {initialTags.map((tag, i) => (
+              <div key={i} className={`border border-gray-300 px-2 py-1 rounded-md cursor-pointer
+               ${selectedTags.includes(tag) ? "bg-blue-500 text-white" : ""}`} onClick={()=> handleSelectedTags(tag)} >
+                <p className='text-xs'>{tag}</p>
+              </div>
+            ))}
+        </div>
+
+        {/* button action */}
+        <button 
+        type='button'
+        onClick={pushToCloud}
+        className='w-full bg-blue-700 text-white rounded-md py-3'
+        
+        >
+          Save</button>
       </div>
 
       {/* Right container */}
