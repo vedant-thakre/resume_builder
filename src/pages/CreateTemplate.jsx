@@ -3,9 +3,9 @@ import { PuffLoader } from 'react-spinners';
 import { FaTrash, FaUpload } from 'react-icons/fa'
 import { toast } from 'react-toastify';
 import { deleteObject, getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
-import { storage } from '../config/firebase';
+import { db, storage } from '../config/firebase';
 import { initialTags } from '../utils/helper';
-import { serverTimestamp } from 'firebase/firestore';
+import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
 import useTemplates from '../hooks/useTemplate';
 
 const CreateTemplate = () => {
@@ -117,7 +117,16 @@ const CreateTemplate = () => {
         name :  templates && templates.length > 0 ? `Templates${templates.length + 1}` : "Templates1",
         timestamp : timestamp,
       };
-      console.log(_doc)
+      
+      await setDoc(doc(db, "templates", id), _doc).then(() => {
+        setFormData((prev) => ({...prev, title: "", imageURL: ""}));
+        setimageAsset((prevAsset) => ({...prevAsset, uri: null}));
+        setSelectedTags([]);
+        templatesRefetch();
+        toast.success("Data push to the cloud");
+      }).catch(err => {
+        toast.error(`Error : ${err.message}`);
+      })
     }
 
   return (
