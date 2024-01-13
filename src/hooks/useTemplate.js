@@ -9,6 +9,7 @@ const useTemplates = () => {
         async () => {
             try {
                 const templates = await getTemplates();
+                console.log(templates);
                 return templates;
             } catch (error) {
                 console.log(error);

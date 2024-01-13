@@ -42,7 +42,7 @@ export const getTemplates = () => {
     )
 
     const unsubscribe = onSnapshot(templateQuery,  (querySnap) => {
-      const templates = querySnap.docs.map(doc => doc.data);
+      const templates = querySnap.docs.map(doc => doc.data());
       resolve(templates);
     });
 
