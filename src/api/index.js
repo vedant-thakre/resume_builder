@@ -17,7 +17,7 @@ export const getUserDetails = () => {
                 resolve(userData);
               })
               .catch((error) => {
-                reject(error); // Reject on Firestore write error
+                reject(error); 
               });
           }
         });
