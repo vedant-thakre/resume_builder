@@ -20,7 +20,7 @@ export const getUserDetails = () => {
                 reject(error); 
               });
           }
-        });
+        }); // added few changes
 
         // Make sure to unsubscribe from the Firestore listener to prevent memory leaks
         return () => unsubscribeFirestore();
