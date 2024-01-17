@@ -2,7 +2,7 @@ import { useQuery } from "react-query"
 import { toast } from "react-toastify";
 import { getTemplates } from "../api";
 
-// added changes
+// added changes okay
 const useTemplates = () => {
     const { data, isLoading, isError, refetch } = useQuery(
         "templates",
