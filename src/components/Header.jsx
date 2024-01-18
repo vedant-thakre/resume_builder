@@ -78,7 +78,7 @@ const Header = () => {
                          {data?.displayName && 
                         <p className='text-md font-bold text-txtDark'>{data?.displayName}</p>
                         }
-                        {/* menu */}
+                        { /* menu */ }
                         <div className='w-full flex-col items-start flex gap-4 pt-2'>
                             <Link className='text-base text-txtLight hover:text-txtDark whitespace-nowrap' to={"/profile"}> 
                             My Accound
