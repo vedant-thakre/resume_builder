@@ -83,7 +83,6 @@ const Header = () => {
                             <Link className='text-base text-txtLight hover:text-txtDark whitespace-nowrap' to={"/profile"}> 
                             My Accound
                             </Link>
-
                             {
                                 adimnIds.includes(data?.uid) && 
                                 (<Link className='text-base text-txtLight hover:text-txtDark whitespace-nowrap' to={"/template/create"}> 
